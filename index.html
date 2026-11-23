@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MMQ Art - متجر الفن</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@300;400;600&display=swap');
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #f5f2eb;
+            color: #3b3028;
+            font-family: 'Amiri', 'Traditional Arabic', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            direction: rtl;
+            text-align: right;
+            text-rendering: optimizeLegibility;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* شريط التنقل العلوي */
+        nav {
+            background-color: #2c362d;
+            color: #f5f2eb;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .nav-brand {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 22px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            color: #f5f2eb;
+        }
+
+        .cart-icon {
+            background-color: #3d4a3e;
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-size: 15px;
+            cursor: pointer;
+            border: 1px solid #8c6d53;
+            transition: all 0.3s;
+        }
+
+        .cart-icon:hover {
+            background-color: #8c6d53;
+        }
+
+        /* الهيدر الرئيسي */
+        header {
+            background-color: #3d4a3e;
+            color: #f5f2eb;
+            padding: 50px 20px 40px 20px;
+            text-align: center;
+            border-bottom: 4px solid #8c6d53;
+        }
+
+        .brand-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 48px;
+            font-weight: 600;
+            letter-spacing: 5px;
+            line-height: 1;
+        }
+
+        .brand-subtitle {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 15px;
+            font-weight: 300;
+            letter-spacing: 8px;
+            color: #d1c7bd;
+            text-transform: uppercase;
+            margin-top: 6px;
+        }
+
+        .tagline {
+            margin-top: 15px;
+            font-size: 18px;
+            color: #e2dad1;
+            font-style: italic;
+        }
+
+        /* قسم نبذة عن المتجر */
+        .about-section {
+            max-width: 800px;
+            margin: 40px auto 20px auto;
+            text-align: center;
+            padding: 0 20px;
+        }
+
+        .about-section h2 {
+            font-size: 26px;
+            color: #3d4a3e;
+            margin-bottom: 10px;
+        }
+
+        .about-section p {
+            font-size: 17px;
+            color: #5a4e44;
+        }
+
+        /* أزرار تصفية التصنيفات */
+        .filter-container {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin: 25px 0 10px 0;
+            flex-wrap: wrap;
+            padding: 0 20px;
+        }
+
+        .filter-btn {
+            background-color: #e8e2d5;
+            color: #3b3028;
+            border: 1px solid #c8beaf;
+            padding: 8px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: 'Amiri', serif;
+            font-size: 15px;
+            transition: all 0.3s;
+        }
+
+        .filter-btn.active, .filter-btn:hover {
+            background-color: #3d4a3e;
+            color: #f5f2eb;
+            border-color: #3d4a3e;
+        }
+
+        /* شبكة معرض اللوحات */
+        .container {
+            max-width: 1100px;
+            margin: 20px auto 50px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 35px;
+        }
+
+        /* بطاقات الأعمال الفنية */
+        .card {
+            background: #faf8f5;
+            border: 1px solid #e0d8cc;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(61, 74, 62, 0.06);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 10px 25px rgba(61, 74, 62, 0.15);
+            border-color: #8c6d53;
+        }
+
+        .img-wrapper {
+            position: relative;
+            cursor: pointer;
+            overflow: hidden;
+            background-color: #e8e2d5;
+        }
+
+        .card-img {
+            width: 100%;
+            height: 480px;
+            object-fit: contain;
+            border-bottom: 1px solid #ebd9c8;
+            transition: transform 0.4s ease;
+        }
+
+        .img-wrapper:hover .card-img {
+            transform: scale(1.03);
+        }
+
+        .zoom-hint {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            background-color: rgba(44, 54, 45, 0.8);
+            color: #fff;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+
+        .card-body {
+            padding: 25px;
+            text-align: right;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card-title {
+            font-size: 22px;
+            margin-bottom: 8px;
+            color: #2b231d;
+            font-weight: 700;
+        }
+
+        .card-desc {
+            font-size: 15px;
+            color: #665a50;
+            margin-bottom: 15px;
+        }
+
+        .specs-list {
+            font-size: 14px;
+            color: #554a40;
+            background-color: #f0eae1;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+        }
+
+        .specs-list li {
+            list-style: none;
+            margin-bottom: 4px;
+        }
+
+        .option-group {
+            margin-bottom: 15px;
+        }
+
+        .option-group label {
+            font-size: 13px;
+            font-weight: bold;
+            color: #8c6d53;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .option-group select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #d1c7bd;
+            border-radius: 4px;
+            background-color: #f5f2eb;
+            font-family: 'Amiri', serif;
+            font-size: 14px;
+        }
+
+        .card-price {
+            color: #a45a38;
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 15px;
+            font-family: 'Amiri', serif;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background-color: #3d4a3e;
+            color: #f5f2eb;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 15px;
+            font-family: 'Amiri', serif;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #2c362d;
+        }
+
+        .btn-secondary {
+            background-color: #8c6d53;
+        }
+
+        .btn-secondary:hover {
+            background-color: #72563f;
+        }
+
+        /* قسم قصة الفنانة والفلسفة */
+        .philosophy-section {
+            background-color: #eae3d5;
+            border-top: 1px solid #d8cebe;
+            border-bottom: 1px solid #d8cebe;
+            padding: 50px 20px;
+            margin-top: 40px;
+        }
+
+        .philosophy-container {
+            max-width: 850px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .philosophy-container h3 {
+            font-size: 24px;
+            color: #3d4a3e;
+            margin-bottom: 15px;
+        }
+
+        .philosophy-container p {
+            font-size: 17px;
+            color: #4a3f35;
+            line-height: 1.8;
+        }
+
+        /* قسم الطلبات الخاصة والتكليف الفني */
+        .custom-order-section {
+            max-width: 850px;
+            margin: 50px auto;
+            background-color: #faf8f5;
+            padding: 35px 25px;
+            border-radius: 8px;
+            border: 1px solid #d8cebe;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+            text-align: center;
+        }
+
+        .custom-order-section h3 {
+            font-size: 24px;
+            color: #3d4a3e;
+            margin-bottom: 10px;
+        }
+
+        .custom-order-section p {
+            font-size: 16px;
+            color: #665a50;
+            margin-bottom: 25px;
+        }
+
+        .custom-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 15px;
+            text-align: right;
+            margin-bottom: 20px;
+        }
+
+    
+
+        /* النافذة المنبثقة (Modal) */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.65);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background-color: #faf8f5;
+            border-radius: 8px;
+            max-width: 500px;
+            width: 100%;
+            padding: 30px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.2);
+            position: relative;
+            border: 1px solid #8c6d53;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            left: 20px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #7a6f63;
+        }
+
+        .modal-title {
+            font-size: 22px;
+            color: #3d4a3e;
+            margin-bottom: 5px;
+        }
+
+        .modal-subtitle {
+            font-size: 15px;
+            color: #8c6d53;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            text-align: right;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            margin-bottom: 5px;
+            color: #3b3028;
+            font-weight: bold;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #d1c7bd;
+            border-radius: 4px;
+            background-color: #f5f2eb;
+            font-family: 'Amiri', serif;
+            font-size: 15px;
+        }
+
+        .btn-whatsapp {
+            background-color: #25D366;
+            color: white;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .btn-whatsapp:hover {
+            background-color: #1ebc57;
+        }
+
+        /* نافذة المعاينة المكبرة للصورة Lightbox */
+        .lightbox-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.88);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .lightbox-img {
+            max-width: 90%;
+            max-height: 85vh;
+            border-radius: 6px;
+            box-shadow: 0 0 20px rgba(255,255,255,0.1);
+        }
+
+        /* سلة التسوق المنبثقة */
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e0d8cc;
+            padding: 10px 0;
+            font-size: 15px;
+        }
+
+        .cart-total {
+            font-size: 18px;
+            font-weight: bold;
+            color: #a45a38;
+            text-align: left;
+            margin: 15px 0;
+        }
+
+        /* الفوتر */
+        footer {
+            background-color: #2c362d;
+            color: #d1c7bd;
+            text-align: center;
+            padding: 30px 20px;
+            border-top: 3px solid #8c6d53;
+            font-size: 15px;
+        }
+
+        /* تجاوب مع الشاشات الصغيرة (الجوال) */
+        @media (max-width: 600px) {
+            .brand-title { font-size: 36px; }
+            .brand-subtitle { font-size: 12px; letter-spacing: 5px; }
+            .container { grid-template-columns: 1fr; }
+            .card-img { height: 380px; }
+            nav { padding: 12px 15px; }
+            .btn-group { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- شريط التنقل -->
+    <nav>
+        <div class="nav-brand">MMQ Art</div>
+        <div class="cart-icon" onclick="openCartModal()">🛒 السلة (<span id="cartCount">0</span>)</div>
+    </nav>
+
+    <!-- رأس الصفحة -->
+    <header>
+        <div class="brand-title">MMQ</div>
+        <div class="brand-subtitle">Art</div>
+        <p class="tagline">قطع فنية مصممة بلمسة أصالة وإلهام تعكس مكامن الذات</p>
+    </header>
+
+    <!-- نبذة عن المعرض -->
+    <section class="about-section">
+        <h2>رؤية وتعبير</h2>
+        <p>مرحباً بكم في معرض MMQ Art، حيث تلتقي الأصالة بالتعبير الحديث في قطع أصيلة وفريدة تُصنع بحب وشغف لتمنح مساحاتكم دفئاً وهوية.</p>
+    </section>
+
+    <!-- أزرار تصفية اللوحات -->
+    <div class="filter-container">
+        <button class="filter-btn active" onclick="filterGallery('all', this)">كل اللوحات</button>
+        <button class="filter-btn" onclick="filterGallery('portrait', this)">بورتريه وتعبير</button>
+        <button class="filter-btn" onclick="filterGallery('heritage', this)">تشكيل ومعالم</button>
+    </div>
+
+    <!-- معرض اللوحات -->
+    <div class="container">
+
+        <!-- اللوحة الأولى: الهوية والكرامة -->
+        <div class="card" data-category="portrait">
+            <div class="img-wrapper" onclick="openLightbox('IMG_3212.jpeg')">
+                <img src="IMG_3212.jpeg" alt="الهوية والكرامة" class="card-img">
+                <span class="zoom-hint">🔍 انقر للتكبير</span>
+            </div>
+            <div class="card-body">
+                <div>
+                    <h3 class="card-title">الهوية والكرامة</h3>
+                    <p class="card-desc">
+                        بورتريه تعبيري بلا ملامح، يجسد فكرة أن الهوية تستمد من الداخل لا من الشكل الظاهر. ينسدل الثوب الفاتح بصفاء بينما يرمز الوشاح الأحمر لقوة المشاعر، ويعلو الراس تاج ذهبي يهمس بالكرامة والاعتزاز بالذات.
+                    </p>
+                    <ul class="specs-list">
+                        <li><strong>الأبعاد:</strong> 90 سم (ارتفاع) × 60 سم (عرض)</li>
+                        <li><strong>الأسلوب:</strong> تعبيري حديث</li>
+                        <li><strong>الخامة الأساسية:</strong> ألوان زيتية على كانفاس</li>
+                    </ul>
+
+                    <div class="option-group">
+                        <label for="type-1">نوع القطعة المطلوبة:</label>
+                        <select id="type-1" onchange="updatePrice(1)">
+                            <option value="original" data-price="1500">لوحة زيتية أصلية فريدة (1500 ريال)</option>
+                            <option value="print" data-price="350">طباعة كانفاس فاخرة (350 ريال)</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <div class="card-price" id="price-1">1500 ريال</div>
+                    <div class="btn-group">
+                        <button class="btn" onclick="addToCart('الهوية والكرامة', 1)">إضافة للسلة 🛒</button>
+                        <button class="btn btn-secondary" onclick="openOrderModal('الهوية والكرامة', 1)">طلب مباشر</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- اللوحة الثانية: التزلج الملكي -->
+        <div class="card" data-category="heritage">
+            <div class="img-wrapper" onclick="openLightbox('IMG_8706.jpg')">
+                <img src="IMG_8706.jpg" alt="التزلج الملكي" class="card-img">
+                <span class="zoom-hint">🔍 انقر للتكبير</span>
+            </div>
+            <div class="card-body">
+                <div>
+                    <h3 class="card-title">التزلج الملكي</h3>
+                    <p class="card-desc">
+                        تشكيل فني معاصر يبرز شخصية الأمير سعود الفيصل -رحمه الله- بزي التزلج المزين بالشعار الوطني، في مشهد يجمع بين الهيبة والوقار بلمسات فنية هادئة.
+                    </p>
+                    <ul class="specs-list">
+                        <li><strong>الأبعاد:</strong> 40 سم (ارتفاع) × 30 سم (عرض)</li>
+                        <li><strong>الأسلوب:</strong> تشكيل فني معاصر</li>
+                        <li><strong>الخامة الأساسية:</strong> ألوان زيتية على كانفاس مسطحة</li>
+                    </ul>
+
+                    <div class="option-group">
+                        <label for="type-2">نوع القطعة المطلوبة:</label>
+                        <select id="type-2" onchange="updatePrice(2)">
+                            <option value="original" data-price="5000">لوحة زيتية أصلية فريدة (5000 ريال)</option>
+                            <option value="print" data-price="450">طباعة كانفاس فاخرة (450 ريال)</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <div class="card-price" id="price-2">5000 ريال</div>
+                    <div class="btn-group">
+                        <button class="btn" onclick="addToCart('التزلج الملكي', 2)">إضافة للسلة 🛒</button>
+                        <button class="btn btn-secondary" onclick="openOrderModal('التزلج الملكي', 2)">طلب مباشر</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- قسم طلب عمل فني خاص / تكليف فني -->
+    <section class="custom-order-section">
+        <h3>🎨 طلب عمل فني خاص (Custom Commission)</h3>
+        <p>هل تحلم بقطعة زيتية خاصة تجسد معلماً أثرياً كالدرعية، حقول الخزامى، أو رؤية فنية بلمستك الخاصة؟ يسعدنا تنفيذ طلبك بكل شغف.</p>
+        <form onsubmit="sendCustomOrder(event)">
+            <div class="custom-grid">
+                <div class="form-group">
+                    <label for="cName">الاسم الكريم:</label>
+                    <input type="text" id="cName" required placeholder="اسمك الكريم">
+                </div>
+                <div class="form-group">
+                    <label for="cPhone">رقم الجوال:</label>
+                    <input type="tel" id="cPhone" required placeholder="05xxxxxxxx">
+                </div>
+                <div class="form-group">
+                    <label for="cSize">المقاس المقترح:</label>
+                    <select id="cSize">
+                        <option value="60x90 سم">60 × 90 سم</option>
+                        <option value="100x70 سم">100 × 70 سم</option>
+                        <option value="120x100 سم">120 × 100 سم (مقاس كبير)</option>
+                        <option value="مقاس خاص">مقاس آخر (سيتم تحديده)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="cTopic">موضوع اللوحة:</label>
+                    <select id="cTopic">
+                        <option value="تراث وتاريخ (كالدرعية / القلاع)">تراث وتاريخ (كالدرعية / القلاع)</option>
+                        <option value="طبيعة وزهور (كالخزامى والسراب)">طبيعة وزهور (كالخزامى والسراب)</option>
+                        <option value="بورتريه شخصي تعبيري">بورتريه شخصي تعبيري</option>
+                        <option value="فكرة وتصميم خاص">فكرة وتصميم خاص</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="cDetails">تفاصيل إضافية أو فكرة اللوحة:</label>
+                <textarea id="cDetails" rows="3" placeholder="اكتب رؤيتك أو تفاصيل الألوان والأجواء التي تفضلها..."></textarea>
+            </div>
+            <button type="submit" class="btn btn-whatsapp">إرسال تفاصيل الطلب الخاص عبر الواتساب 💬</button>
+        </form>
+    </section>
+
+    <!-- قسم قصة الفنانة والفلسفة -->
+    <section class="philosophy-section">
+        <div class="philosophy-container">
+            <h3>فلسفة الفن في MMQ Art 🌿</h3>
+            <p>
+                الفن بالنسبة لي ليس مجرد ألوان تُسكب على الكانفاس، بل هو لغة صامتة تصوغ مكامن الذات وتخلّد التراث والأصالة بلمسة تعبيرية حديثة. تنبع كل قطعة زيتية من استلهام عميق للطبيعة، الدرعية القديمة، زهور الخزامى، والشخصيات الملهمة التي تركت أثراً خالداً.
+            </p>
+        </div>
+    </section>
+
+    <!-- النافذة المنبثقة للطلب المباشر (Modal) -->
+    <div class="modal" id="orderModal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('orderModal')">&times;</span>
+            <h3 class="modal-title">طلب عمل فني</h3>
+            <p class="modal-subtitle" id="selectedArtworkName">اسم اللوحة</p>
+
+            <form id="orderForm" onsubmit="sendWhatsApp(event)">
+                <div class="form-group">
+                    <label for="buyerName">الاسم الكريم:</label>
+                    <input type="text" id="buyerName" required placeholder="أدخل اسمك هنا">
+                </div>
+
+                <div class="form-group">
+                    <label for="buyerPhone">رقم الجوال:</label>
+                    <input type="tel" id="buyerPhone" required placeholder="05xxxxxxxx">
+                </div>
+
+                <div class="form-group">
+                    <label for="city">المدينة / خيار الشحن:</label>
+                    <select id="city">
+                        <option value="الرياض">الرياض (توصيل مباشر)</option>
+                        <option value="باقي مدن المملكة">باقي مدن المملكة (شحن)</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-whatsapp">إرسال الطلب عبر الواتساب 💬</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- نافذة سلة التسوق (Cart Modal) -->
+    <div class="modal" id="cartModal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('cartModal')">&times;</span>
+            <h3 class="modal-title">سلة التسوق 🛒</h3>
+            <div id="cartItemsContainer" style="margin-top: 15px;">
+                <p style="text-align:center; color:#777;">السلة فارغة حالياً.</p>
+            </div>
+            <div class="cart-total" id="cartTotalDisplay">المجموع: 0 ريال</div>
+            
+            <form onsubmit="checkoutCart(event)" id="cartCheckoutForm" style="display:none;">
+                <div class="form-group">
+                    <label for="cartBuyerName">الاسم الكريم:</label>
+                    <input type="text" id="cartBuyerName" required placeholder="أدخل اسمك هنا">
+                </div>
+                <div class="form-group">
+                    <label for="cartBuyerPhone">رقم الجوال:</label>
+                    <input type="tel" id="cartBuyerPhone" required placeholder="05xxxxxxxx">
+                </div>
+                <div class="form-group">
+                    <label for="cartCity">المدينة / الشحن:</label>
+                    <select id="cartCity">
+                        <option value="الرياض">الرياض (توصيل مباشر)</option>
+                        <option value="باقي مدن المملكة">باقي مدن المملكة (شحن)</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-whatsapp">تأكيد ورسالة السلة عبر الواتساب 💬</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- نافذة المعاينة المكبرة للصورة (Lightbox Modal) -->
+    <div class="lightbox-modal" id="lightboxModal" onclick="closeLightbox()">
+        <img src="" alt="معاينة اللوحة" class="lightbox-img" id="lightboxImage">
+    </div>
+
+    <!-- الفوتر -->
+    <footer>
+        <p>جميع الحقوق محفوظة &copy; 2026 - MMQ Art</p>
+        <p>صُنعت بأيدي فنانة سعودية ✨</p>
+    </footer>
+
+    <!-- الجافاسكريبت المطور بالكامل -->
+    <script>
+        const myWhatsAppNumber = "966537561368"; 
+        let selectedTitle = "";
+        let selectedPrice = 0;
+        let cart = [];
+
+        // تحديث السعر بناءً على النوع (أصلي / طباعة)
+        function updatePrice(id) {
+            const select = document.getElementById(`type-${id}`);
+            const selectedOption = select.options[select.selectedIndex];
+            const price = selectedOption.getAttribute('data-price');
+            document.getElementById(`price-${id}`).innerText = `${price} ريال`;
+        }
+
+        // تصفية اللوحات حسب التصنيف
+        function filterGallery(category, btn) {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            const cards = document.querySelectorAll('.card');
+            cards.forEach(card => {
+                if (category === 'all' || card.getAttribute('data-category') === category) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // معاينة الصورة بحجم كامل Lightbox
+        function openLightbox(imgSrc) {
+            document.getElementById('lightboxImage').src = imgSrc;
+            document.getElementById('lightboxModal').style.display = 'flex';
+        }
+
+        function closeLightbox() {
+            document.getElementById('lightboxModal').style.display = 'none';
+        }
+
+        // إضافة لوحة لسلة التسوق
+        function addToCart(title, id) {
+            const select = document.getElementById(`type-${id}`);
+            const selectedOption = select.options[select.selectedIndex];
+            const typeText = selectedOption.text;
+            const price = parseInt(selectedOption.getAttribute('data-price'));
+
+            cart.push({ title, typeText, price });
+            updateCartUI();
+            alert(`تمت إضافة "${title}" إلى السلة بنجاح!`);
+        }
+
+        function updateCartUI() {
+            document.getElementById('cartCount').innerText = cart.length;
+            const container = document.getElementById('cartItemsContainer');
+            const checkoutForm = document.getElementById('cartCheckoutForm');
+            let total = 0;
+
+            if (cart.length === 0) {
+                container.innerHTML = '<p style="text-align:center; color:#777;">السلة فارغة حالياً.</p>';
+                checkoutForm.style.display = 'none';
+            } else {
+                container.innerHTML = '';
+                cart.forEach((item, index) => {
+                    total += item.price;
+                    container.innerHTML += `
+                        <div class="cart-item">
+                            <div>
+                                <strong>${item.title}</strong><br>
+                                <small style="color:#666;">${item.typeText}</small>
+                            </div>
+                            <div>
+                                <span style="color:#a45a38; font-weight:bold;">${item.price} ريال</span>
+                                <button onclick="removeFromCart(${index})" style="background:none; border:none; color:red; cursor:pointer; margin-right:8px;">✕</button>
+                            </div>
+                        </div>
+                    `;
+                });
+                checkoutForm.style.display = 'block';
+            }
+            document.getElementById('cartTotalDisplay').innerText = `المجموع: ${total} ريال`;
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCartUI();
+        }
+
+        function openCartModal() {
+            updateCartUI();
+            document.getElementById('cartModal').style.display = 'flex';
+        }
+
+        // إرسال طلب السلة عبر الواتساب
+        function checkoutCart(event) {
+            event.preventDefault();
+            const name = document.getElementById('cartBuyerName').value;
+            const phone = document.getElementById('cartBuyerPhone').value;
+            const city = document.getElementById('cartCity').value;
+
+            let itemsText = "";
+            let total = 0;
+            cart.forEach((item, i) => {
+                itemsText += `%0A${i+1}. *${item.title}* (${item.typeText})`;
+                total += item.price;
+            });
+
+            const message = `السلام عليكم ورحمة الله وبركاته،%0A%0Aأرغب في تأكيد طلب اللوحات التالية من متجر MMQ Art:${itemsText}%0A%0A💰 *المجموع الكلي:* ${total} ريال%0A👤 *الاسم:* ${name}%0A📱 *الجوال:* ${phone}%0A📍 *المدينة/التوصيل:* ${city}`;
+
+            window.open(`https://wa.me/${myWhatsAppNumber}?text=${message}`, '_blank');
+            cart = [];
+            updateCartUI();
+            closeModal('cartModal');
+        }
+
+        // الطلب المباشر للوحة واحدة
+        function openOrderModal(artworkTitle, id) {
+            const select = document.getElementById(`type-${id}`);
+            const selectedOption = select.options[select.selectedIndex];
+            selectedTitle = `${artworkTitle} - (${selectedOption.text})`;
+            
+            document.getElementById('selectedArtworkName').innerText = `اللوحة المختارة: ${selectedTitle}`;
+            document.getElementById('orderModal').style.display = 'flex';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        function sendWhatsApp(event) {
+            event.preventDefault();
+            const name = document.getElementById('buyerName').value;
+            const phone = document.getElementById('buyerPhone').value;
+            const city = document.getElementById('city').value;
+
+            const message = `السلام عليكم ورحمة الله وبركاته،%0A%0Aأرغب في الاستفسار / طلب العمل الفني التالي من متجر MMQ Art:%0A🎨 *اللوحة:* ${selectedTitle}%0A👤 *الاسم:* ${name}%0A📱 *الجوال:* ${phone}%0A📍 *المدينة/التوصيل:* ${city}`;
+
+            window.open(`https://wa.me/${myWhatsAppNumber}?text=${message}`, '_blank');
+            closeModal('orderModal');
+        }
+
+        // إرسال طلب لوحة خاصة / تكليف فني
+        function sendCustomOrder(event) {
+            event.preventDefault();
+            const name = document.getElementById('cName').value;
+            const phone = document.getElementById('cPhone').value;
+            const size = document.getElementById('cSize').value;
+            const topic = document.getElementById('cTopic').value;
+            const details = document.getElementById('cDetails').value;
+
+            const message = `السلام عليكم ورحمة الله وبركاته،%0A%0Aأرغب في طلب *عمل فني خاص (Custom Commission)* من متجر MMQ Art:%0A🎨 *الموضوع:* ${topic}%0A📏 *المقاس:* ${size}%0A📝 *التفاصيل:* ${details || 'لا توجد تفاصيل إضافية'}%0A👤 *الاسم:* ${name}%0A📱 *الجوال:* ${phone}`;
+
+            window.open(`https://wa.me/${myWhatsAppNumber}?text=${message}`, '_blank');
+        }
+
+        // إغلاق النوافذ عند الضغط خارجها
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        }
+    </script>
+
+</body>
+</html>
